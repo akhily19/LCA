@@ -99,11 +99,3 @@ This scenario demonstrates a highly unsustainable profile.
 > *   **CO₂ Emissions:** Significantly higher than Aluminum.
 
 ---
-
-## 3. Review of Bug Fixes & Project Health 
-
-As part of finalizing this platform, the following critical issues were resolved:
-1.  **Data Leakage Bug:** The initial model was inadvertently trained on exactly the variables it was supposed to predict (like `F`, `W_C`). This resulted in an HTTP 500 error when the API couldn't map user inputs to those targets. The model is now cleanly trained on 19 strictly exogenous features.
-2.  **Schema Mismatches:** Corrected FastAPI Pydantic schemas (adding fields like `recycled_output_kg_per_kg`) to match the trained Random Forest precisely.
-3.  **Port Conflicts / Pycache Issues:** Rewrote the unified launcher (`main.py`) to properly execute the `uvicorn` server inside a Daemon thread, entirely bypassing subprocess zombie states and Pycache conflicts.
-4.  **Deprecated Pydantic Calls:** Migrated FastAPI response serializers from `.dict()` to `.model_dump()`.
