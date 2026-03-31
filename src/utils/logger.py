@@ -2,15 +2,24 @@ from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 from datetime import datetime
+import sys
 
 console = Console()
 
 def log_inference_dashboard(mci_val, emissions_val, latency):
+    # Suppress output when embedded in interactive unified applications
+    if sys.argv and ('main.py' in sys.argv[0] or 'main' in sys.argv[0] or 'interactive_client.py' in sys.argv[0]):
+        return
+
     mci_status = "[bold green]HIGHLY CIRCULAR[/]" if mci_val > 0.7 else \
                  ("[bold yellow]TRANSITIONAL[/]" if mci_val > 0.3 else "[bold red]LINEAR (WASTE-PRONE)[/]")
     
-    emi_status = "[bold green]LOW IMPACT[/]" if emissions_val < 2.0 else \
-                 ("[bold red]CRITICAL EMISSIONS[/]")
+    if emissions_val < 2.0:
+        emi_status = "[bold green]LOW IMPACT[/]"
+    elif emissions_val < 5.0:
+        emi_status = "[bold yellow]MODERATE IMPACT[/]"
+    else:
+        emi_status = "[bold red]CRITICAL EMISSIONS[/]"
 
     table = Table(show_header=True, header_style="bold magenta", border_style="dim")
     table.add_column("Metric", style="cyan")
